@@ -5,7 +5,10 @@ import { HeroBanner, AnnouncementsCard, GuideSection, StatusCard } from './compo
 import { ChartsSection } from './components/ChartsSection';
 import { MarketplaceOffers } from './components/MarketplaceOffers';
 import { SearchDemand } from './components/SearchDemand';
+import { CenterProfile } from './components/CenterProfile';
 import { CenterDetails } from './components/CenterDetails';
+import { Messages } from './components/Messages';
+import { FinanceSubscription } from './components/FinanceSubscription';
 import { UserProfile, Theme } from './types';
 
 const App: React.FC = () => {
@@ -18,6 +21,22 @@ const App: React.FC = () => {
     role: 'Center Director',
     avatarUrl: 'https://picsum.photos/id/64/200/200',
   };
+
+  const renderPlaceholder = (route: string) => (
+    <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-600 transition-colors">
+      <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
+        <div className="animate-pulse bg-slate-300 dark:bg-slate-500 w-8 h-8 rounded-full"></div>
+      </div>
+      <h3 className="text-xl font-bold text-slate-400 dark:text-slate-500">Section Under Construction</h3>
+      <p className="text-slate-400 dark:text-slate-500 mt-2">The {route} module is currently being built.</p>
+      <button 
+        onClick={() => setActiveRoute('dashboard')}
+        className="mt-6 px-4 py-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg font-medium transition-colors"
+      >
+        Return to Dashboard
+      </button>
+    </div>
+  );
 
   const renderContent = () => {
     switch (activeRoute) {
@@ -85,24 +104,36 @@ const App: React.FC = () => {
             </div>
           </div>
         );
+      case 'profile':
+        return <CenterProfile />;
       case 'center':
         return <CenterDetails />;
+      case 'messages':
+        return <Messages />;
+      case 'finance':
+        return <FinanceSubscription />;
       default:
-        return (
-          <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-600 transition-colors">
-            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4">
-              <div className="animate-pulse bg-slate-300 dark:bg-slate-500 w-8 h-8 rounded-full"></div>
-            </div>
-            <h3 className="text-xl font-bold text-slate-400 dark:text-slate-500">Section Under Construction</h3>
-            <p className="text-slate-400 dark:text-slate-500 mt-2">The {activeRoute} module is currently being built.</p>
-            <button 
-              onClick={() => setActiveRoute('dashboard')}
-              className="mt-6 px-4 py-2 text-sm text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded-lg font-medium transition-colors"
-            >
-              Return to Dashboard
-            </button>
-          </div>
-        );
+        return renderPlaceholder(activeRoute);
+    }
+  };
+
+  const getPageTitle = () => {
+    switch (activeRoute) {
+      case 'profile': return 'Center Profile';
+      case 'messages': return 'Messages';
+      case 'center': return 'Center Details';
+      case 'finance': return 'Finance & Subscriptions';
+      default: return 'Provider Dashboard';
+    }
+  };
+
+  const getPageSubtitle = () => {
+    switch (activeRoute) {
+      case 'profile': return 'Manage your internal center profile, programs, and staff';
+      case 'messages': return 'Chat with parents and ChildrenKARE support';
+      case 'center': return 'Preview your public-facing center listing';
+      case 'finance': return 'Manage billing, payments, and subscription plans';
+      default: return `Welcome back, ${user.name.split(' ')[0]}`;
     }
   };
 
@@ -130,10 +161,10 @@ const App: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white transition-colors">
-                    {activeRoute === 'center' ? 'Center Details' : 'Provider Dashboard'}
+                    {getPageTitle()}
                   </h1>
                   <p className="text-slate-500 dark:text-slate-400 mt-1 transition-colors">
-                    {activeRoute === 'center' ? 'Manage your public center profile and licensing' : `Welcome back, ${user.name.split(' ')[0]}`}
+                    {getPageSubtitle()}
                   </p>
                 </div>
               </div>
